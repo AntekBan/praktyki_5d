@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Procentu Składanego</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Kalkulator Procentu Składanego</h1>
+</header>
+
+<main>
+    <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+
+    <div class="dzial">
+        <h2>Wprowadź dane</h2>
+        <ul>
+            <li>
+                <label for="kapital">Kapitał początkowy (zł):</label><br>
+                <input type="number" id="kapital" placeholder="np. 1000" step="0.01" style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </li>
+            <li>
+                <label for="oprocentowanie">Oprocentowanie roczne (%):</label><br>
+                <input type="number" id="oprocentowanie" placeholder="np. 5" step="0.1" style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </li>
+            <li>
+                <label for="lata">Okres oszczędzania (lata):</label><br>
+                <input type="number" id="lata" placeholder="np. 10" style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </li>
+            <li style="margin-top: 20px;">
+                <button id="obliczBtn" style="padding: 12px 25px; cursor: pointer; background: #75baec; color: white; border: none; border-radius: 5px; font-weight: bold; width: 100%;">Oblicz wynik</button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="dzial" id="wynikSekcja" style="display: none; border-left: 5px solid #75baec;">
+        <h2>Wynik obliczeń</h2>
+        <p id="wynikTekst" style="font-size: 1.1em; line-height: 1.6;"></p>
+    </div>
+</main>
+
+<script>
+    document.getElementById('obliczBtn').addEventListener('click', function() {
+        const p = parseFloat(document.getElementById('kapital').value);
+        const r = parseFloat(document.getElementById('oprocentowanie').value) / 100;
+        const n = parseInt(document.getElementById('lata').value);
+
+        if (isNaN(p) || isNaN(r) || isNaN(n) || p <= 0 || n < 0) {
+            alert("Proszę wprowadzić poprawne dane dodatnie.");
+            return;
+        }
+
+        const wynik = p * Math.pow((1 + r), n);
+        const zysk = wynik - p;
+
+        const sekcjaWyniku = document.getElementById('wynikSekcja');
+        const tekstWyniku = document.getElementById('wynikTekst');
+
+        sekcjaWyniku.style.display = "block";
+        tekstWyniku.innerHTML = `
+            Po <strong>${n}</strong> latach Twój kapitał wyniesie: <strong>${wynik.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2})} zł</strong>.<br>
+            Twój czysty zysk to: <strong>${zysk.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2})} zł</strong>.
+        `;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Całek</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    color: #222;
+}
+
+.header {
+    background: #75baec;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.container {
+    display: flex;
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+.sidebar {
+    width: 220px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-right: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+    display: block;
+    margin: 10px 0;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.sidebar a:hover {
+    color: #e85959;
+}
+
+.content {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #75baec;
+}
+
+input {
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 18px;
+    background: #75baec;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #5aa4d8;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #ddd;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+Firma
+</div>
+
+<div class="container">
+    <div class="sidebar">
+        <b>Menu</b><br><br>
+        <a href="StronaGlowna.html">Strona główna</a>
+    </div>
+
+    <div class="content">
+        <h2>Kalkulator całki nieoznaczonej</h2>
+
+        <p>Podaj wyrażenie np: 3x^2 + 4x^1 + 5x^0</p>
+
+        <input type="text" id="expression" size="40">
+        <br>
+        <button onclick="calculateIntegral()">Oblicz całkę</button>
+
+        <h3>Wynik:</h3>
+        <p id="result"></p>
+    </div>
+</div>
+
+<script>
+function calculateIntegral() {
+    var tekst = document.getElementById("expression").value;
+    var kawałki = tekst.split("+");
+    var wynik = "";
+
+    for (var i = 0; i < kawałki.length; i++) {
+        var element = kawałki[i];
+        element = element.trim();
+
+        var podzial = element.split("x^");
+
+        var a = Number(podzial[0]);
+        var n = Number(podzial[1]);
+
+        var nowyWykladnik = n + 1;
+        var nowyWspolczynnik = a / nowyWykladnik;
+
+        wynik = wynik + nowyWspolczynnik + "x^" + nowyWykladnik + " + ";
+    }
+
+    wynik = wynik + "C";
+
+    document.getElementById("result").innerHTML = wynik;
+}
+</script>
+
+</body>
+</html>

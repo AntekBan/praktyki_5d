@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator lokaty</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>2.8 Lokata</h1>
+        <p>Kalkulator wartości lokaty po odnowieniach</p>
+    </header>
+
+    <main>
+        <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+        <section class="dzial">
+            <h2>Dane wejściowe</h2>
+            <ul>
+                <li>
+                    <label for="wysokoscWkladuWlasnego">Wysokość wkładu własnego (zł):</label><br>
+                    <input type="number" id="wysokoscWkladuWlasnego" min="0" step="0.01">
+                </li>
+                <li>
+                    <label for="oprocentowanie">Oprocentowanie roczne (%):</label><br>
+                    <input type="number" id="oprocentowanie" min="0" step="0.01">
+                </li>
+                <li>
+                    <label for="dlugoscTrwaniaLokaty">Długość trwania jednej lokaty (w miesiącach):</label><br>
+                    <input type="number" id="dlugoscTrwaniaLokaty" min="1" step="1">
+                </li>
+                <li>
+                    <label for="iloscOdnowienLokaty">Ilość odnowień lokaty:</label><br>
+                    <input type="number" id="iloscOdnowienLokaty" min="0" step="1">
+                </li>
+            </ul>
+
+            <button onclick="obliczLokate()">Oblicz</button>
+        </section>
+
+        <section class="dzial">
+            <h2>Wynik</h2>
+            <p id="wynik">Tutaj pojawi się wynik.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Prosty kalkulator lokaty w HTML, CSS i JavaScript</p>
+    </footer>
+
+    <script>
+        function obliczLokate() {
+            var wysokoscWkladuWlasnego = parseFloat(document.getElementById('wysokoscWkladuWlasnego').value);
+            var oprocentowanie = parseFloat(document.getElementById('oprocentowanie').value);
+            var dlugoscTrwaniaLokaty = parseInt(document.getElementById('dlugoscTrwaniaLokaty').value);
+            var iloscOdnowienLokaty = parseInt(document.getElementById('iloscOdnowienLokaty').value);
+
+            if (isNaN(wysokoscWkladuWlasnego) || isNaN(oprocentowanie) || isNaN(dlugoscTrwaniaLokaty) || isNaN(iloscOdnowienLokaty)) {
+                document.getElementById('wynik').innerHTML = 'Uzupełnij wszystkie pola.';
+                return;
+            }
+
+            var kwotaKoncowa = wysokoscWkladuWlasnego;
+            var liczbaWszystkichOkresow = iloscOdnowienLokaty + 1;
+            var odsetkiZaJedenOkres;
+            var i;
+
+            for (i = 0; i < liczbaWszystkichOkresow; i++) {
+                odsetkiZaJedenOkres = kwotaKoncowa * (oprocentowanie / 100) * (dlugoscTrwaniaLokaty / 12);
+                kwotaKoncowa = kwotaKoncowa + odsetkiZaJedenOkres;
+            }
+
+            document.getElementById('wynik').innerHTML =
+                'Kwota początkowa: ' + wysokoscWkladuWlasnego.toFixed(2) + ' zł<br>' +
+                'Kwota końcowa po zakończeniu lokaty i odnowieniach: ' + kwotaKoncowa.toFixed(2) + ' zł<br>' +
+                'Łączny zysk: ' + (kwotaKoncowa - wysokoscWkladuWlasnego).toFixed(2) + ' zł';
+        }
+    </script>
+</body>
+</html>

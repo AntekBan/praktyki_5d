@@ -5,10 +5,11 @@
     <title>Kalkulator Pochodnych</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
 <header>
-    Firma
+    <h1>Kalkulator Pochodnych</h1>
+    <p>Podaj wyrażenie np: 4x^6 + 3x^6 + 2x + 4</p>
 </header>
 
 <main>
@@ -20,59 +21,79 @@
     </div>
 
     <div class="dzial">
-        <h2>Kalkulator pochodnej wielomianu</h2>
+        <form method="POST">
+            <input type="text" name="wyrazenie" size="40" value="<?php echo isset($_POST['wyrazenie']) ? htmlspecialchars($_POST['wyrazenie']) : ''; ?>">
+            <br><br>
+            <button type="submit">Oblicz pochodną</button>
+        </form>
 
-        <p>Podaj wyrażenie np: 3x^2 + 4x^1 + 5x^0</p>
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['wyrazenie'])) {
+            $wejscie = strtoupper($_POST['wyrazenie']); 
+            $wejscie = str_replace(" ", "", $wejscie); 
+            
+            // Poprawka dla x bez potęgi (np. 2x -> 2x^1)
+            $wejscie = preg_replace('/X(?!\^)/', 'X^1', $wejscie);
+            
+            // Rozbicie wielomianu na pojedyncze składniki
+            $skladniki = explode("+", str_replace("-", "+-", $wejscie));
+            $suma_wspolczynnikow = [];
 
-        <input type="text" id="expression" size="40">
-        <br><br>
-        <button onclick="calculateDerivative()">Oblicz pochodną</button>
+            foreach ($skladniki as $skladnik) {
+                if (empty($skladnik)) continue;
 
-        <h3>Wynik:</h3>
-        <p id="result"></p>
+                if (strpos($skladnik, 'X^') !== false) {
+                    $czesci = explode("X^", $skladnik);
+                    $wspolczynnik = (float)$czesci[0];
+                    $potega = (int)$czesci[1];
+                } else {
+                    // Obsługa samej liczby (np. 4 -> 4x^0)
+                    $wspolczynnik = (float)$skladnik;
+                    $potega = 0;
+                }
+
+                if (isset($suma_wspolczynnikow[$potega])) {
+                    $suma_wspolczynnikow[$potega] += $wspolczynnik;
+                } else {
+                    $suma_wspolczynnikow[$potega] = $wspolczynnik;
+                }
+            }
+
+            // Sortowanie od największej potęgi
+            krsort($suma_wspolczynnikow); 
+
+            $wynik_finalny = [];
+            foreach ($suma_wspolczynnikow as $n => $a) {
+                if ($n > 0) {
+                    $nowy_wspolczynnik = $a * $n;
+                    $nowa_potega = $n - 1;
+
+                    if ($nowy_wspolczynnik == 0) continue;
+
+                    // Upraszczanie zapisu (brak ^1 i ^0)
+                    if ($nowa_potega == 0) {
+                        $wynik_finalny[] = $nowy_wspolczynnik;
+                    } elseif ($nowa_potega == 1) {
+                        $wynik_finalny[] = $nowy_wspolczynnik . "x";
+                    } else {
+                        $wynik_finalny[] = $nowy_wspolczynnik . "x^" . $nowa_potega;
+                    }
+                }
+            }
+
+            echo "<h3>Wynik:</h3>";
+            $tekst_wyniku = implode(" + ", $wynik_finalny);
+            $tekst_wyniku = str_replace("+ -", "- ", $tekst_wyniku);
+            
+            echo "<p><b>" . ($tekst_wyniku ?: "0") . "</b></p>";
+        }
+        ?>
     </div>
 </main>
 
-<script>
-function calculateDerivative() {
-    var tekst = document.getElementById("expression").value;
-    var kawalki = tekst.split("+");
-    var dane = {};
-
-    for (var i = 0; i < kawalki.length; i++) {
-        var element = kawalki[i].trim();
-        var podzial = element.split("x^");
-        
-        var a = Number(podzial[0]);
-        var n = Number(podzial[1]);
-
-        if (dane[n]) {
-            dane[n] += a;
-        } else {
-            dane[n] = a;
-        }
-    }
-
-    var stopnie = Object.keys(dane).sort(function(a, b) { return b - a; });
-
-    var wynik = "";
-
-    for (var j = 0; j < stopnie.length; j++) {
-        var n = Number(stopnie[j]);
-        var a = dane[n];
-
-        if (n > 0) { 
-            var nowyWspolczynnik = a * n;
-            var nowyWykladnik = n - 1;
-
-            if (wynik !== "") wynik += " + ";
-            wynik += nowyWspolczynnik + "x^" + nowyWykladnik;
-        }
-    }
-
-    document.getElementById("result").innerHTML = wynik || "0";
-}
-</script>
+<footer>
+    <p>Strone wykonała: 5D 2/2</p>
+</footer>
 
 </body>
 </html>

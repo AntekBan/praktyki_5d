@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Całek</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<header>
+    Firma
+</header>
+
+<main>
+
+    <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+
+    <div class="dzial">
+        <h2>Kalkulator całki nieoznaczonej</h2>
+
+        <p>Podaj wyrażenie np: 3x^2 + 4x^1 + 5x^0</p>
+
+        <input type="text" id="expression" size="40">
+        <br><br>
+        <button onclick="calculateIntegral()">Oblicz całkę</button>
+
+        <h3>Wynik:</h3>
+        <p id="result"></p>
+    </div>
+
+</main>
+<script>
+function calculateIntegral() {
+    var tekst = document.getElementById("expression").value;
+    var kawałki = tekst.split("+");
+    var wynik = "";
+
+    for (var i = 0; i < kawałki.length; i++) {
+        var element = kawałki[i];
+        element = element.trim();
+
+        var podzial = element.split("x^");
+
+        var a = Number(podzial[0]);
+        var n = Number(podzial[1]);
+
+        var nowyWykladnik = n + 1;
+        var nowyWspolczynnik = a / nowyWykladnik;
+
+        wynik += nowyWspolczynnik + "x^" + nowyWykladnik;
+
+        if (i < kawałki.length - 1) {
+            wynik += " + ";
+        }
+    }
+
+    wynik += " + C";
+
+    document.getElementById("result").innerHTML = wynik;
+}
+</script>
+
+</body>
+</html>

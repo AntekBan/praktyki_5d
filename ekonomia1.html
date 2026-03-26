@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator PIT 2020</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Kalkulator PIT</h1>
+    <p>Obliczenie wysokości podatku od osób fizycznych</p>
+</header>
+
+<main>
+    <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+
+    <div class="dzial">
+        <h2>Dane użytkownika</h2>
+
+        <p>podaj wszystkie dane i na tej podstawie obliczana jest wysokość podatku wg progów za rok 2020.</p>
+
+        <label>Dochód roczny (zł):</label><br><br>
+        <input type="number" id="dochod"><br><br>
+
+        <label>Koszty uzyskania przychodu (zł):</label><br><br>
+        <input type="number" id="koszty" value="0"><br><br>
+
+        <button onclick="obliczPIT()">Oblicz podatek</button>
+    </div>
+
+    <div class="dzial">
+        <h2>Wynik</h2>
+        <p id="wynik">Tu pojawi się wynik...</p>
+    </div>
+
+</main>
+
+<script>
+function obliczPIT() {
+    let dochod = parseFloat(document.getElementById("dochod").value);
+    let koszty = parseFloat(document.getElementById("koszty").value);
+
+    if (isNaN(dochod) || dochod <= 0) {
+        document.getElementById("wynik").innerText = "Podaj poprawne dane!";
+        return;
+    }
+
+    let podstawa = dochod - koszty;
+    let podatek = 0;
+
+    if (podstawa <= 85528) {
+        podatek = podstawa * 0.17;
+    } else {
+        podatek = (85528 * 0.17) + ((podstawa - 85528) * 0.32);
+    }
+
+    document.getElementById("wynik").innerText =
+        "Podstawa opodatkowania: " + podstawa.toFixed(2) + " zł\n" +
+        "Podatek do zapłaty: " + podatek.toFixed(2) + " zł";
+}
+</script>
+
+</body>
+</html>

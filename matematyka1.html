@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator macierzy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Kalkulator macierzy</h1>
+</header>
+
+<main>
+    <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+
+    <div class="dzial">
+        <h2>Dodawanie / Odejmowanie macierzy</h2>
+
+        <p>Macierz A:</p>
+        <textarea id="macierzA" rows="4" cols="40"></textarea>
+
+        <p>Macierz B:</p>
+        <textarea id="macierzB" rows="4" cols="40"></textarea>
+
+        <br><br>
+        <button onclick="dodaj()">Dodaj</button>
+        <button onclick="odejmij()">Odejmij</button>
+
+        <p>Wynik:</p>
+        <pre id="wynik1"></pre>
+    </div>
+
+    <div class="dzial">
+        <h2>Mnożenie / Dzielenie przez liczbę</h2>
+
+        <p>Macierz:</p>
+        <textarea id="macierzC" rows="4" cols="40"></textarea>
+
+        <p>Liczba:</p>
+        <input type="number" id="liczba">
+
+        <br><br>
+        <button onclick="mnoz()">Mnoż</button>
+        <button onclick="dziel()">Dziel</button>
+
+        <p>Wynik:</p>
+        <pre id="wynik2"></pre>
+    </div>
+
+</main>
+
+<footer>
+    <p>© Kalkulator macierzy</p>
+</footer>
+
+<script>
+function parseMatrix(text) {
+    return text.trim().split("\n").map(row =>
+        row.trim().split(" ").map(Number)
+    );
+}
+
+function matrixToString(matrix) {
+    return matrix.map(row => row.join(" ")).join("\n");
+}
+
+function dodaj() {
+    let A = parseMatrix(document.getElementById("macierzA").value);
+    let B = parseMatrix(document.getElementById("macierzB").value);
+
+    let wynik = A.map((row, i) =>
+        row.map((val, j) => val + B[i][j])
+    );
+
+    document.getElementById("wynik1").textContent = matrixToString(wynik);
+}
+
+function odejmij() {
+    let A = parseMatrix(document.getElementById("macierzA").value);
+    let B = parseMatrix(document.getElementById("macierzB").value);
+
+    let wynik = A.map((row, i) =>
+        row.map((val, j) => val - B[i][j])
+    );
+
+    document.getElementById("wynik1").textContent = matrixToString(wynik);
+}
+
+function mnoz() {
+    let C = parseMatrix(document.getElementById("macierzC").value);
+    let liczba = Number(document.getElementById("liczba").value);
+
+    let wynik = C.map(row =>
+        row.map(val => val * liczba)
+    );
+
+    document.getElementById("wynik2").textContent = matrixToString(wynik);
+}
+
+function dziel() {
+    let C = parseMatrix(document.getElementById("macierzC").value);
+    let liczba = Number(document.getElementById("liczba").value);
+
+    let wynik = C.map(row =>
+        row.map(val => val / liczba)
+    );
+
+    document.getElementById("wynik2").textContent = matrixToString(wynik);
+}
+</script>
+
+</body>
+</html>

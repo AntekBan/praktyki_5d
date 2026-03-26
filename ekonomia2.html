@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalkulator Kredytu</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+  <h1>Kalkulator Kredytu</h1>
+  <p>Oblicz swoją ratę kredytu</p>
+</header>
+<main>
+  <div class="dzial">
+    <h2>Menu</h2>
+    <ul>
+      <li>
+        <a href="StronaGlowna.html">Strona główna</a>
+      </li>
+    </ul>
+  </div>
+  <div class="dzial">
+    <h2>Dane kredytu</h2>
+    <ul>
+      <li>Kwota kredytu: <input type="number" id="kwota" placeholder="np. 100000"></li>
+      <li>Oprocentowanie (% rocznie): <input type="number" id="oprocentowanie" placeholder="np. 8"></li>
+      <li>Okres (lata): <input type="number" id="lata" placeholder="np. 10"></li>
+    </ul>
+    <button onclick="oblicz()">Oblicz ratę</button>
+  </div>  
+  <div class="dzial">
+    <h2>Wynik</h2>
+    <p id="wynik">Twoja rata pojawi się tutaj</p>
+  </div>
+</main>
+
+<script>
+function oblicz() {
+  let kwota = parseFloat(document.getElementById('kwota').value);
+  let oprocentowanie = parseFloat(document.getElementById('oprocentowanie').value) / 100 / 12;
+  let lata = parseFloat(document.getElementById('lata').value);
+
+  let liczbaRat = lata * 12;
+
+  if (!kwota || !oprocentowanie || !lata) {
+    document.getElementById('wynik').innerText = "Wprowadź wszystkie dane.";
+    return;
+  }
+
+  let rata = kwota * (oprocentowanie * Math.pow(1 + oprocentowanie, liczbaRat)) /
+             (Math.pow(1 + oprocentowanie, liczbaRat) - 1);
+
+  document.getElementById('wynik').innerText =
+    "Miesięczna rata: " + rata.toFixed(2) + " zł";
+}
+</script>
+</body>
+</html>

@@ -4,109 +4,88 @@
     <meta charset="UTF-8">
     <title>Kalkulator Pochodnych</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Додано базовий стиль про всяк випадок, якщо style.css відсутній */
-        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
-        .dzial { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
-        #wynik-tekst { color: #d9534f; font-size: 1.2em; }
-    </style>
 </head>
 <body>
 
 <header>
     <h1>Kalkulator Pochodnych</h1>
-    [span_0](start_span)<p>Podaj wyrażenie np: 4x^6 + 3x^6 + 2x + 4[span_0](end_span)</p>
+    <p>Podaj wyrażenie np: 4x^6 + 3x^6 + 2x + 4</p>
 </header>
 
 <main>
     <div class="dzial">
         <h2>Menu</h2>
         <ul>
-            [span_1](start_span)<li><a href="StronaGlowna.html">Strona główna</a>[span_1](end_span)</li>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
         </ul>
     </div>
 
     <div class="dzial">
-        <form id="calcForm" onsubmit="obliczPochodna(event)">
-            [span_2](start_span)<input type="text" id="wyrazenie" name="wyrazenie" size="40" placeholder="Wpisz wyrażenie...">[span_2](end_span)
+        <form id="calcForm">
+            <input type="text" id="wyrazenie" size="40">
             <br><br>
             <button type="submit">Oblicz pochodną</button>
         </form>
 
-        <div id="wynik-sekcja" style="margin-top: 20px;">
-            [span_3](start_span)<h3>Wynik:</h3>[span_3](end_span)
-            [span_4](start_span)<p><b id="wynik-tekst">0</b></p>[span_4](end_span)
+        <div id="wynik-sekcja">
+            <h3>Wynik:</h3>
+            <p><b id="wynik-tekst">0</b></p>
         </div>
     </div>
 </main>
 
 <footer>
-    [span_5](start_span)<p>Strone wykonała: 5D 2/2[span_5](end_span)</p>
+    <p>Strone wykonała: 5D 2/2</p>
 </footer>
 
 <script>
-function obliczPochodna(event) {
-    event.preventDefault();
+document.getElementById('calcForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let wejscie = document.getElementById('wyrazenie').value.toUpperCase().replace(/\s+/g, "");
+    wejscie = wejscie.replace(/X(?!\^)/g, 'X^1');
     
-    [span_6](start_span)let wejscie = document.getElementById('wyrazenie').value.toUpperCase();[span_6](end_span)
-    [span_7](start_span)wejscie = wejscie.replace(/\s+/g, "");[span_7](end_span)
-    
-    // Поправка для x без степеня (напр. 2x -> 2x^1)
-    [span_8](start_span)wejscie = wejscie.replace(/X(?!\^)/g, 'X^1');[span_8](end_span)
-    
-    // Розбиття на окремі доданки
-    [span_9](start_span)let skladniki = wejscie.replace(/-/g, "+-").split("+");[span_9](end_span)
-    [span_10](start_span)let suma_wspolczynnikow = {};[span_10](end_span)
+    let skladniki = wejscie.replace(/-/g, "+-").split("+");
+    let suma_wspolczynnikow = {};
 
     skladniki.forEach(skladnik => {
-        [span_11](start_span)if (!skladnik) return;[span_11](end_span)
-        
+        if (!skladnik) return;
         let wspolczynnik, potega;
-        
-        [span_12](start_span)if (skladnik.includes("X^")) {[span_12](end_span)
-            [span_13](start_span)let czesci = skladnik.split("X^");[span_13](end_span)
-            [span_14](start_span)wspolczynnik = parseFloat(czesci[0]);[span_14](end_span)
-            // Якщо перед X немає цифри (напр. X^2), коефіцієнт = 1
+        if (skladnik.includes("X^")) {
+            let czesci = skladnik.split("X^");
+            wspolczynnik = parseFloat(czesci[0]);
             if (isNaN(wspolczynnik)) wspolczynnik = skladnik.startsWith("-") ? -1 : 1;
-            [span_15](start_span)potega = parseInt(czesci[1]);[span_15](end_span)
+            potega = parseInt(czesci[1]);
         } else {
-            // Обробка чистого числа (напр. 4 -> 4x^0)
-            [span_16](start_span)wspolczynnik = parseFloat(skladnik);[span_16](end_span)
-            [span_17](start_span)potega = 0;[span_17](end_span)
+            wspolczynnik = parseFloat(skladnik);
+            potega = 0;
         }
-
-        if (suma_wspolczynnikow[potega] !== undefined) {
-            [span_18](start_span)suma_wspolczynnikow[potega] += wspolczynnik;[span_18](end_span)
-        } else {
-            [span_19](start_span)suma_wspolczynnikow[potega] = wspolczynnik;[span_19](end_span)
-        }
+        suma_wspolczynnikow[potega] = (suma_wspolczynnikow[potega] || 0) + wspolczynnik;
     });
 
-    // Сортування та розрахунок похідної
-    [span_20](start_span)let potegi = Object.keys(suma_wspolczynnikow).map(Number).sort((a, b) => b - a);[span_20](end_span)
+    let potegi = Object.keys(suma_wspolczynnikow).map(Number).sort((a, b) => b - a);
     let wynik_finalny = [];
 
     potegi.forEach(n => {
         if (n > 0) {
             let a = suma_wspolczynnikow[n];
-            [span_21](start_span)let nowy_wspolczynnik = a * n;[span_21](end_span)
-            [span_22](start_span)let nowa_potega = n - 1;[span_22](end_span)
+            let nowy_wspolczynnik = a * n;
+            let nowa_potega = n - 1;
 
-            [span_23](start_span)if (nowy_wspolczynnik === 0) return;[span_23](end_span)
+            if (nowy_wspolczynnik === 0) return;
 
             if (nowa_potega === 0) {
-                [span_24](start_span)wynik_finalny.push(nowy_wspolczynnik);[span_24](end_span)
+                wynik_finalny.push(nowy_wspolczynnik);
             } else if (nowa_potega === 1) {
-                [span_25](start_span)wynik_finalny.push(nowy_wspolczynnik + "x");[span_25](end_span)
+                wynik_finalny.push(nowy_wspolczynnik + "x");
             } else {
-                [span_26](start_span)wynik_finalny.push(nowy_wspolczynnik + "x^" + nowa_potega);[span_26](end_span)
+                wynik_finalny.push(nowy_wspolczynnik + "x^" + nowa_potega);
             }
         }
     });
 
-    [span_27](start_span)let tekst_wyniku = wynik_finalny.join(" + ").replace(/\+ -/g, "- ");[span_27](end_span)
-    document.getElementById('wynik-tekst').innerText = tekst_wyniku || [span_28](start_span)"0";[span_28](end_span)
-}
+    let tekst_wyniku = wynik_finalny.join(" + ").replace(/\+ -/g, "- ");
+    document.getElementById('wynik-tekst').innerText = tekst_wyniku || "0";
+});
 </script>
 
 </body>

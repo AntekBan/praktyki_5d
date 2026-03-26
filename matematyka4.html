@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Pochodnych</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Kalkulator Pochodnych</h1>
+    <p>Podaj wyrażenie np: 4x^6 + 3x^6 + 2x + 4</p>
+</header>
+
+<main>
+    <div class="dzial">
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="StronaGlowna.html">Strona główna</a></li>
+        </ul>
+    </div>
+
+    <div class="dzial">
+        <form id="calcForm">
+            <input type="text" id="wyrazenie" size="40">
+            <br><br>
+            <button type="submit">Oblicz pochodną</button>
+        </form>
+
+        <div id="wynik-sekcja">
+            <h3>Wynik:</h3>
+            <p><b id="wynik-tekst">0</b></p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>Strone wykonała: 5D 2/2</p>
+</footer>
+
+<script>
+document.getElementById('calcForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let wejscie = document.getElementById('wyrazenie').value.toUpperCase().replace(/\s+/g, "");
+    wejscie = wejscie.replace(/X(?!\^)/g, 'X^1');
+    
+    let skladniki = wejscie.replace(/-/g, "+-").split("+");
+    let suma_wspolczynnikow = {};
+
+    skladniki.forEach(skladnik => {
+        if (!skladnik) return;
+        let wspolczynnik, potega;
+        if (skladnik.includes("X^")) {
+            let czesci = skladnik.split("X^");
+            wspolczynnik = parseFloat(czesci[0]);
+            if (isNaN(wspolczynnik)) wspolczynnik = skladnik.startsWith("-") ? -1 : 1;
+            potega = parseInt(czesci[1]);
+        } else {
+            wspolczynnik = parseFloat(skladnik);
+            potega = 0;
+        }
+        suma_wspolczynnikow[potega] = (suma_wspolczynnikow[potega] || 0) + wspolczynnik;
+    });
+
+    let potegi = Object.keys(suma_wspolczynnikow).map(Number).sort((a, b) => b - a);
+    let wynik_finalny = [];
+
+    potegi.forEach(n => {
+        if (n > 0) {
+            let a = suma_wspolczynnikow[n];
+            let nowy_wspolczynnik = a * n;
+            let nowa_potega = n - 1;
+
+            if (nowy_wspolczynnik === 0) return;
+
+            if (nowa_potega === 0) {
+                wynik_finalny.push(nowy_wspolczynnik);
+            } else if (nowa_potega === 1) {
+                wynik_finalny.push(nowy_wspolczynnik + "x");
+            } else {
+                wynik_finalny.push(nowy_wspolczynnik + "x^" + nowa_potega);
+            }
+        }
+    });
+
+    let tekst_wyniku = wynik_finalny.join(" + ").replace(/\+ -/g, "- ");
+    document.getElementById('wynik-tekst').innerText = tekst_wyniku || "0";
+});
+</script>
+
+</body>
+</html>
+
